@@ -41,12 +41,12 @@ func main() {
 		flag.PrintDefaults()
 
 		fmt.Println(
-			"\nNETWORKS:\n  " +
-				"Supported network types are tcp, tcp4 (IPv4-only), " +
-				"tcp6 (IPv6-only),\n  udp, udp4 (IPv4-only), " +
-				"udp6 (IPv6-only), ip, ip4 (IPv4-only), " +
-				"ip6 (IPv6-only),\n  unix, unixgram, and unixpacket.\n" +
-				"\nTo report bugs or view source code, see " +
+			"\nNETWORKS:\n" +
+				"  Supported network types are tcp, tcp4, tcp6, udp, udp4, udp6,\n" +
+				"  ip, ip4, ip6, unix, unixgram, and unixpacket. Network types\n" +
+				"  with 4 in the name are IPv4-only, and those with 6 are likewise\n" +
+				"  IPv6-only.\n\n" +
+				"To report bugs or view source code, see " +
 				upstream +
 				".",
 		)

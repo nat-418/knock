@@ -50,9 +50,9 @@ succeeds, `knock` will hang up and report back that success.
 | -time  | Time to wait in seconds before giving up (default `15`) |
 
 ## Networks
-Supported network types are `tcp`, `tcp4 `(IPv4-only), `tcp6 `(IPv6-only),
-`udp`, `udp4 `(IPv4-only), `udp6 `(IPv6-only), `ip`, `ip4 `(IPv4-only),
-`ip6 `(IPv6-only), `unix`, `unixgram`, and `unixpacket`.
+Supported network types are `tcp`, `tcp4 `, `tcp6 `, `udp`, `udp4 `, `udp6 `,
+`ip`, `ip4 `, `ip6 `, `unix`, `unixgram`, and `unixpacket`. The network types
+with `4` in their name are IPv4-only, and those with `6` are IPv6-only.
 
 ## Miscellaneous
 
