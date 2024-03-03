@@ -1,0 +1,52 @@
+.ig
+Zero-Clause BSD
+===============
+
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+..
+.TH knock 1 "March 2024" "knock 0.0.2" "knock - a command-line network tester"
+
+.SH NAME
+knock - a command-line network tester
+
+.SH SYNOPSIS
+knock [OPTIONS]
+
+.SH DESCRIPTION
+knock is a command-line network reachability tester
+
+.SH OPTIONS
+.TP
+.B "-dest"
+Network destination address or name
+.TP
+.B "-net"
+Network type to use, see NETWORKS (default "tcp")
+.TP
+.B "-port"
+Port number to knock on destination (default "80")
+.TP
+.B "-time"
+Time to wait in seconds before giving up (default 15)
+
+.SH EXIT STATUS
+Supported network types are tcp, tcp4, tcp6, udp, udp4, udp6,
+ip, ip4, ip6, unix, unixgram, and unixpacket. Network types
+with 4 in the name are IPv4-only, and those with 6 are likewise
+IPv6-only.
+
+.SH MISCELLANEOUS
+To report bugs or view source code, see https://www.github.com/nat-418/knock.
+
+.SH LICENSE
+0BSD
+

@@ -13,27 +13,44 @@ import (
 	"time"
 )
 
-func abortMsg(s string) {
-	color.New(color.Bold, color.FgRed).Fprint(os.Stderr, "Error:")
-	fmt.Fprintln(os.Stderr, " "+s+".")
-	os.Exit(1)
-}
-
-func failMsg(s string) {
-	color.New(color.Bold, color.FgRed).Fprint(os.Stdout, "Failed:")
-	fmt.Fprintln(os.Stdout, " "+s+".")
-}
-
 func main() {
-	version := "0.0.1"
+	version := "0.0.2"
 	upstream := "https://www.github.com/nat-418/knock"
-	supported_networks := []string{
+	ok_nets := []string{
 		"tcp", "tcp4", "tcp6",
 		"udp", "upd4", "udp6",
 		"ip", "ip4", "ip6",
 		"unix", "unixgram", "unixpacket",
 	}
 
+	target, dest, port, timeout, network := parseCli(version, upstream, ok_nets)
+
+	sp := startSpinner(dest, port)
+
+	startTimer(timeout, sp)
+
+	knock(target, network, timeout, sp)
+}
+
+func knock(target string, network string, timeout int, sp *spinner.Spinner) {
+	_, err := net.Dial(network, target)
+
+	if err != nil {
+		sp.Stop()
+		if strings.Contains(err.Error(), "connection refused") {
+			failMsg("connection refused")
+		} else {
+			failMsg(err.Error())
+		}
+		os.Exit(1)
+	} else {
+		sp.Stop()
+		color.New(color.Bold, color.FgGreen).Fprintln(os.Stdout, "Succeeded.")
+		os.Exit(0)
+	}
+}
+
+func parseCli(version string, upstream string, ok_nets []string) (string, string, string, int, string) {
 	var dest string
 	var port string
 	var network string
@@ -45,7 +62,7 @@ func main() {
 	flag.IntVar(&timeout, "time", 15, "Time to wait in seconds before giving up")
 	flag.Usage = func() {
 		fmt.Println(
-			"knock v" + version + "\n" +
+			"knock v" + version + " - " +
 				"A simple network reachability tester\n\n" +
 				"USAGE:\n" +
 				"  knock [OPTIONS] destination port\n\n" +
@@ -69,7 +86,7 @@ func main() {
 
 	flag.Parse()
 
-	if !slices.Contains(supported_networks, network) {
+	if !slices.Contains(ok_nets, network) {
 		abortMsg("unsupported network")
 		os.Exit(1)
 	}
@@ -100,11 +117,15 @@ func main() {
 	}
 
 	if dest == "" {
-		abortMsg("no destination specified.")
+		abortMsg("no destination specified")
 	}
 
 	target := dest + ":" + port
 
+	return target, dest, port, timeout, network
+}
+
+func startSpinner(dest string, port string) *spinner.Spinner {
 	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 
 	s.Suffix =
@@ -116,28 +137,26 @@ func main() {
 	s.Color("green", "bold")
 	s.Start()
 
+	return s
+}
+
+func startTimer(timeout int, sp *spinner.Spinner) {
 	go func() {
 		time.Sleep(time.Duration(timeout) * time.Second)
-		s.Stop()
+		sp.Stop()
 		t := strconv.Itoa(timeout)
 		failMsg("connection timed out after " + t + " seconds")
 		os.Exit(1)
 	}()
+}
 
-	_, err := net.Dial(network, target)
+func abortMsg(s string) {
+	color.New(color.Bold, color.FgRed).Fprint(os.Stderr, "Error:")
+	fmt.Fprintln(os.Stderr, " "+s+".")
+	os.Exit(1)
+}
 
-	if err != nil {
-		s.Stop()
-		if strings.Contains(err.Error(), "connection refused") {
-			failMsg("connection refused")
-		} else {
-			failMsg(err.Error())
-		}
-		os.Exit(1)
-	} else {
-		s.Stop()
-		color.New(color.Bold, color.FgGreen).Fprintln(os.Stdout, "Succeeded.")
-		os.Exit(0)
-	}
-
+func failMsg(s string) {
+	color.New(color.Bold, color.FgRed).Fprint(os.Stdout, "Failed:")
+	fmt.Fprintln(os.Stdout, " "+s+".")
 }
