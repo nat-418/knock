@@ -22,16 +22,13 @@ You can call `knock` just like `telnet`:
 
 ```bash
 $ knock localhost 8080
-Trying to knock on localhost:8080…
-Failed with error:
- dial tcp [::1]:8080: connect: connection refused
+Failed: connection refused.
 ```
 
 Or with a colon:
 
 ```bash
 $ knock 192.168.100.1:22
-Trying to knock on 192.168.100.1:22…
 Succeeded.
 ```
 
@@ -39,7 +36,6 @@ Or with option flags:
 
 ```bash
 $ knock -time 10 -dest example.com -port 8000 -net tcp
-Trying to knock on example.com:8000…
 Failed: connection timed out after 10 seconds.
 ```
 

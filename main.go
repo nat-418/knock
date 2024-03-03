@@ -3,12 +3,26 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/briandowns/spinner"
+	"github.com/fatih/color"
 	"net"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 )
+
+func abortMsg(s string) {
+	color.New(color.Bold, color.FgRed).Fprint(os.Stderr, "Error:")
+	fmt.Fprintln(os.Stderr, " "+s+".")
+	os.Exit(1)
+}
+
+func failMsg(s string) {
+	color.New(color.Bold, color.FgRed).Fprint(os.Stdout, "Failed:")
+	fmt.Fprintln(os.Stdout, " "+s+".")
+}
 
 func main() {
 	version := "0.0.1"
@@ -56,7 +70,7 @@ func main() {
 	flag.Parse()
 
 	if !slices.Contains(supported_networks, network) {
-		fmt.Fprintln(os.Stderr, "Error: unsupported network.")
+		abortMsg("unsupported network")
 		os.Exit(1)
 	}
 
@@ -78,37 +92,51 @@ func main() {
 	}
 
 	if len(rest) > 2 {
-		fmt.Fprintln(os.Stderr, "Error: too many arguments.")
-		os.Exit(1)
+		abortMsg("too many arguments")
 	}
 
 	if strings.Contains(dest, ":") {
-		fmt.Fprintln(os.Stderr, "Error: invalid destination.")
-		os.Exit(1)
+		abortMsg("invalid destination")
 	}
 
 	if dest == "" {
-		fmt.Fprintln(os.Stderr, "Error: no destination specified.")
-		os.Exit(1)
+		abortMsg("no destination specified.")
 	}
 
 	target := dest + ":" + port
 
-	fmt.Fprintln(os.Stdout, "Trying to knock on "+target+"…")
+	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
+
+	s.Suffix =
+		" Knocking on " +
+			color.New(color.Bold, color.FgBlue).Sprint(dest) +
+			":" +
+			color.New(color.Bold, color.FgMagenta).Sprint(port) +
+			"…"
+	s.Color("green", "bold")
+	s.Start()
 
 	go func() {
 		time.Sleep(time.Duration(timeout) * time.Second)
-		fmt.Fprintln(os.Stdout, "Failed: connection timed out after", timeout, "seconds.")
+		s.Stop()
+		t := strconv.Itoa(timeout)
+		failMsg("connection timed out after " + t + " seconds")
 		os.Exit(1)
 	}()
 
 	_, err := net.Dial(network, target)
 
 	if err != nil {
-		fmt.Fprintln(os.Stdout, "Failed with error:\n", err)
+		s.Stop()
+		if strings.Contains(err.Error(), "connection refused") {
+			failMsg("connection refused")
+		} else {
+			failMsg(err.Error())
+		}
 		os.Exit(1)
 	} else {
-		fmt.Fprintln(os.Stdout, "Succeeded.")
+		s.Stop()
+		color.New(color.Bold, color.FgGreen).Fprintln(os.Stdout, "Succeeded.")
 		os.Exit(0)
 	}
 
