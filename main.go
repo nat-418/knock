@@ -117,7 +117,7 @@ func parseCli(version string, upstream string, ok_nets []string) (string, string
 	}
 
 	if dest == "" {
-		abortMsg("no destination specified.")
+		abortMsg("no destination specified")
 	}
 
 	target := dest + ":" + port
