@@ -62,7 +62,7 @@ func parseCli(version string, upstream string, ok_nets []string) (string, string
 	flag.IntVar(&timeout, "time", 15, "Time to wait in seconds before giving up")
 	flag.Usage = func() {
 		fmt.Println(
-			"knock v" + version + "\n" +
+			"knock v" + version + " - " +
 				"A simple network reachability tester\n\n" +
 				"USAGE:\n" +
 				"  knock [OPTIONS] destination port\n\n" +
