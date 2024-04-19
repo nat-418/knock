@@ -63,7 +63,7 @@ with `4` in their name are IPv4-only, and those with `6` are IPv6-only.
 ## Miscellaneous
 
 Knock is open source-software distributed under the 0BSD license.
-To report bugs or view source code, see https://www.github.com/nat-418/knock.
+To report bugs or view source code, see https://codeberg.org/nat-418/knock.
 
 
 [download a pre-built binary]: https://github.com/nat-418/knock/releases/latest
