@@ -1,4 +1,4 @@
-module knock
+module codeberg.org/nat-418/knock
 
 go 1.21.4
 
